@@ -1,0 +1,30 @@
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$background-color: #d0e9ff;
+
+.card {
+    width: 600px;
+    border-radius: 10px;
+    background-color: $background-color;
+
+    &__image {
+        width: 100%;
+        height: auto;
+    }
+
+    &__content {
+        padding: 20px;
+    }
+
+    &__name {
+        font-size: 24px;
+        margin: 0 0 10px;
+        color: $primary-color;
+    }
+
+    &__description {
+        font-size: 16px;
+        color: $secondary-color;
+        margin: 0 0 20px;
+    }
+}

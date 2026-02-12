@@ -1,0 +1,24 @@
+.card {
+  width: 600px;
+  border-radius: 10px;
+  background-color: #d0e9ff;
+}
+.card__image {
+  width: 100%;
+  height: auto;
+}
+.card__content {
+  padding: 20px;
+}
+.card__name {
+  font-size: 24px;
+  margin: 0 0 10px;
+  color: #007bff;
+}
+.card__description {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0 0 20px;
+}
+
+/*# sourceMappingURL=styles.css.map */
