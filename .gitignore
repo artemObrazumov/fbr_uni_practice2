@@ -1,1 +1,166 @@
-node_modules
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+.report/
+
+# Compiled source #
+/lib
+/dist
+/build
+/es
+/etc
+/
+/out
+/tmp
+/main.js
+
+# Dependencies
+node_modules/
+jspm_packages/
+
+# TypeScript v1 declaration files
+typings/
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle output
+dist/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+.directory
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Virtual hosts
+*.sublime-project
+*.sublime-workspace
+*.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# Editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.tmproj
+*.esproj
+.tern-project
+.idea/
+.vs/
+*.sln
+*.suo
+*.user
+*.bak
+*.resharper
+*.mine
+*.d.ts
+.env
+.env.development
+.env.production
+.env.test
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# misc
+.DS_Store
+.env
+.fetcher
+.git/
+.hg/
+.svn/
+.lock-waf_*
+.wafpickle-*
+.waf-
+CVS
+*.pyc
+*.pyo
+*.pyd
+*.elc
+*.opt
+*.swp
+*.bak
+*.gz
+*.tar.gz
+*.zip
+*.rar
+*.7z
+*.egg-info/
+.coverage
+.cache
+.env
+.venv
+.project
+
+# Docker
+Dockerfile.bak
+docker-compose.yml.bak
+
+# dotenv
+.env
+.env.development
+.env.production
+.env.test
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# secrets
+.env
+.env.*
+!.env.example
+!.env.local
+
+# Server
+server.log
+server-error.log
+
+# coverage
+coverage/
+.nyc_output/
+
+# dist
+dist/
+build/
+out/
+tmp/
+
+# webpack
+.webpack/
+
+# yarn
+.yarn/
+.yarnrc
+
+# Sentry config
+.sentryclirc

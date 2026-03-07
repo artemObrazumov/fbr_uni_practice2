@@ -514,6 +514,40 @@ app.delete("/api/products/:id", (req, res) => {
     res.status(204).send();
 });
 
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Получить информацию о пользователе
+ *     description: Возвращает информацию о текущем пользователе
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Успешный запрос
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 first_name:
+ *                   type: string
+ *                 last_name:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized
+ */
+app.get("/api/auth/me", authMiddleware, (req, res) => {
+    const { hashedPassword, ...userWithoutPassword } = req.user;
+    res.status(200).json(userWithoutPassword);
+});
+
+
 app.listen(port, () => {
     console.log(`Server: http://localhost:${port}`);
     console.log(`Swagger: http://localhost:${port}/api-docs`);
