@@ -1,0 +1,9 @@
+{
+  "name": "practice",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix ./notes-app",
+    "build": "npm run build --prefix ./notes-app",
+    "test": "npm test --prefix ./notes-app"
+  }
+}
