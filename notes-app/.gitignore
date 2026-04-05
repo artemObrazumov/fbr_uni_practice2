@@ -11,6 +11,10 @@
 # production
 /build
 
+# локальные сертификаты mkcert (task.md)
+localhost.pem
+localhost-key.pem
+
 # misc
 .DS_Store
 .env.local

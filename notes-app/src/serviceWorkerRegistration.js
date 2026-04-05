@@ -25,6 +25,14 @@ export function register() {
 function registerValidSW(swUrl) {
   navigator.serviceWorker
     .register(swUrl)
-    .then(() => {})
-    .catch(() => {});
+    .then((reg) => {
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log('[SW] зарегистрирован:', swUrl, reg.scope);
+      }
+    })
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.error('[SW] ошибка регистрации:', swUrl, err);
+    });
 }
