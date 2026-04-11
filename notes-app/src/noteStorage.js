@@ -5,10 +5,18 @@ export function normalizeNotes(raw) {
   return raw
     .map((item, i) => {
       if (typeof item === 'string') {
-        return { id: Date.now() + i, text: item };
+        return { id: Date.now() + i, text: item, reminder: null };
       }
       if (item && typeof item.text === 'string') {
-        return { id: item.id ?? Date.now() + i, text: item.text };
+        const parsedReminder =
+          typeof item.reminder === 'number' && Number.isFinite(item.reminder)
+            ? item.reminder
+            : null;
+        return {
+          id: item.id ?? Date.now() + i,
+          text: item.text,
+          reminder: parsedReminder,
+        };
       }
       return null;
     })

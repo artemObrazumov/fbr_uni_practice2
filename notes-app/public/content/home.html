@@ -15,6 +15,28 @@
       <button class="btn" type="submit">Добавить</button>
     </div>
   </form>
+  <form id="reminder-form" class="form" action="#" method="post">
+    <label class="lbl" for="reminder-text">Текст напоминания</label>
+    <div class="row">
+      <input
+        class="inp inp--grow"
+        type="text"
+        id="reminder-text"
+        name="reminder-text"
+        placeholder="Что напомнить"
+        required
+        autocomplete="off"
+      />
+      <input
+        class="inp"
+        type="datetime-local"
+        id="reminder-time"
+        name="reminder-time"
+        required
+      />
+      <button class="btn" type="submit">Добавить с напоминанием</button>
+    </div>
+  </form>
   <h2 class="h2 h2--center">Список заметок</h2>
   <ul id="notes-list" class="list"></ul>
 </div>

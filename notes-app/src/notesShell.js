@@ -13,36 +13,72 @@ function renderList(container) {
   if (!list) return;
   const notes = readNotes();
   list.innerHTML = notes
-    .map(
-      (n) =>
-        `<li class="li" data-id="${n.id}"><span class="li__text">${escapeHtml(n.text)}</span><button type="button" class="btn btn--small note-del">Удалить</button></li>`
-    )
+    .map((n) => {
+      const reminderText =
+        typeof n.reminder === 'number' && Number.isFinite(n.reminder)
+          ? `<small class="li__meta">Напоминание: ${escapeHtml(
+              new Date(n.reminder).toLocaleString()
+            )}</small>`
+          : '';
+      return `<li class="li" data-id="${n.id}"><span class="li__text">${escapeHtml(
+        n.text
+      )}${reminderText}</span><button type="button" class="btn btn--small note-del">Удалить</button></li>`;
+    })
     .join('');
 }
 
 /**
  * @param {HTMLElement} container
- * @param {{ onNewNote: (text: string, timestamp: number) => void }} api
+ * @param {{ onNewNote: (note: { id: number, text: string, reminder: number | null }) => void }} api
  * @returns {() => void}
  */
 export function attachNotesHome(container, { onNewNote }) {
   const form = container.querySelector('#note-form');
   const input = container.querySelector('#note-input');
-  if (!form || !input) {
+  const reminderForm = container.querySelector('#reminder-form');
+  const reminderTextInput = container.querySelector('#reminder-text');
+  const reminderTimeInput = container.querySelector('#reminder-time');
+  if (
+    !form ||
+    !input ||
+    !reminderForm ||
+    !reminderTextInput ||
+    !reminderTimeInput
+  ) {
     return () => {};
   }
+
+  const addNote = (text, reminder = null) => {
+    const id = Date.now();
+    const notes = readNotes();
+    const note = { id, text, reminder };
+    notes.push(note);
+    writeNotes(notes);
+    renderList(container);
+    onNewNote(note);
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    const timestamp = Date.now();
-    const notes = readNotes();
-    notes.push({ id: timestamp, text });
-    writeNotes(notes);
+    addNote(text, null);
     input.value = '';
-    renderList(container);
-    onNewNote(text, timestamp);
+  };
+
+  const onReminderSubmit = (e) => {
+    e.preventDefault();
+    const text = reminderTextInput.value.trim();
+    const reminderValue = reminderTimeInput.value;
+    if (!text || !reminderValue) return;
+    const reminder = new Date(reminderValue).getTime();
+    if (!Number.isFinite(reminder) || reminder <= Date.now()) {
+      window.alert('Дата напоминания должна быть в будущем.');
+      return;
+    }
+    addNote(text, reminder);
+    reminderTextInput.value = '';
+    reminderTimeInput.value = '';
   };
 
   const onClick = (e) => {
@@ -56,6 +92,7 @@ export function attachNotesHome(container, { onNewNote }) {
   };
 
   form.addEventListener('submit', onSubmit);
+  reminderForm.addEventListener('submit', onReminderSubmit);
   container.addEventListener('click', onClick);
   renderList(container);
 
@@ -64,6 +101,7 @@ export function attachNotesHome(container, { onNewNote }) {
 
   return () => {
     form.removeEventListener('submit', onSubmit);
+    reminderForm.removeEventListener('submit', onReminderSubmit);
     container.removeEventListener('click', onClick);
     if (window.__notesShellRefresh === refresh) {
       delete window.__notesShellRefresh;

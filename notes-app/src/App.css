@@ -212,6 +212,13 @@
   word-break: break-word;
 }
 
+.li__meta {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #5f6368;
+}
+
 .about-content p {
   margin: 0 0 0.5rem;
   color: #333;

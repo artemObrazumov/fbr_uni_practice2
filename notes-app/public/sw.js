@@ -88,6 +88,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Dev-сокеты и HMR нельзя кэшировать через SW — это вызывает циклы перезагрузки.
+  if (
+    url.pathname.startsWith('/socket.io') ||
+    url.pathname.startsWith('/sockjs-node')
+  ) {
+    return;
+  }
+
   /* HTML (в т.ч. dev-сервер): сеть → кэш; офлайн — последний документ */
   if (isMainDocumentRequest(event)) {
     event.respondWith(
@@ -151,7 +159,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 self.addEventListener('push', (event) => {
-  let data = { title: 'Новое уведомление', body: '' };
+  let data = { title: 'Новое уведомление', body: '', reminderId: null };
   if (event.data) {
     try {
       data = event.data.json();
@@ -172,10 +180,58 @@ self.addEventListener('push', (event) => {
     tag: 'notes-task',
     renotify: true,
     requireInteraction: false,
+    data: {
+      reminderId: data.reminderId || null,
+      reminderText: data.body || '',
+    },
   };
+  if (data.reminderId) {
+    options.actions = [
+      { action: 'snooze-5m', title: 'Отложить на 5 минут' },
+      { action: 'snooze-10s', title: 'Отложить на 10 секунд' },
+    ];
+  }
   event.waitUntil(
     self.registration.showNotification(title, options).catch((e) => {
       console.error('showNotification:', e);
     })
   );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  const notification = event.notification;
+  const action = event.action;
+  const reminderId = notification?.data?.reminderId;
+  const reminderText = notification?.data?.reminderText || '';
+
+  if ((action === 'snooze-5m' || action === 'snooze-10s') && reminderId) {
+    const delaySec = action === 'snooze-10s' ? 10 : 300;
+    event.waitUntil(
+      fetch(
+        `/snooze?reminderId=${encodeURIComponent(
+          reminderId
+        )}&delaySec=${delaySec}&text=${encodeURIComponent(reminderText)}`,
+        {
+        method: 'POST',
+        }
+      )
+        .then(() => notification.close())
+        .catch((err) => {
+          console.error('Snooze failed:', err);
+          notification.close();
+        })
+    );
+    return;
+  }
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      if (clients.length > 0) {
+        clients[0].focus();
+        return;
+      }
+      return self.clients.openWindow('/');
+    })
+  );
+  notification.close();
 });

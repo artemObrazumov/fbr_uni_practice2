@@ -50,6 +50,24 @@ npm run server &
 SERVER_PID=$!
 
 sleep 1
+if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+  echo "[start-all] API-сервер не запустился. Проверьте логи выше."
+  exit 1
+fi
+
+for _ in {1..15}; do
+  if curl -kfsS "https://localhost:3001" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+
+if ! curl -kfsS "https://localhost:3001" >/dev/null 2>&1; then
+  echo "[start-all] API-сервер не отвечает на https://localhost:3001."
+  exit 1
+fi
 
 echo "[start-all] Запуск фронта: https://localhost:3000 (Ctrl+C — остановит оба)"
-npm start
+echo "[start-all] API будет через proxy dev-сервера (same-origin)."
+echo "[start-all] Включаю polling watcher для стабильного dev-старта."
+WATCHPACK_POLLING=true CHOKIDAR_USEPOLLING=true npm start

@@ -8,7 +8,7 @@ module.exports = {
     };
     devServerConfig.proxy = [
       {
-        context: ['/socket.io', '/subscribe', '/unsubscribe'],
+        context: ['/socket.io', '/subscribe', '/unsubscribe', '/snooze'],
         target: 'https://localhost:3001',
         changeOrigin: true,
         secure: false,

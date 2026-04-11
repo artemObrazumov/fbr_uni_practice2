@@ -26,17 +26,26 @@ function contentUrl(page) {
   return `${base}/content/${page}.html`;
 }
 
+async function getServiceWorkerRegistration() {
+  const swUrl = `${process.env.PUBLIC_URL || ''}/sw.js`;
+  const byScope = await navigator.serviceWorker.getRegistration(swUrl);
+  if (byScope) return byScope;
+  const any = await navigator.serviceWorker.getRegistration();
+  if (any) return any;
+  return navigator.serviceWorker.register(swUrl);
+}
+
 function App() {
   const [shellPage, setShellPage] = useState('home');
   const [pushEnabledVisible, setPushEnabledVisible] = useState(true);
   const contentRef = useRef(null);
   const socketRef = useRef(null);
-  const lastLocalTaskTs = useRef(null);
+  const lastLocalNoteId = useRef(null);
 
   const subscribeToPush = useCallback(async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     const origin = apiOrigin() || window.location.origin;
-    const registration = await navigator.serviceWorker.ready;
+    const registration = await getServiceWorkerRegistration();
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
@@ -59,7 +68,7 @@ function App() {
   const unsubscribeFromPush = useCallback(async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
     const origin = apiOrigin() || window.location.origin;
-    const registration = await navigator.serviceWorker.ready;
+    const registration = await getServiceWorkerRegistration();
     const subscription = await registration.pushManager.getSubscription();
     if (subscription) {
       await fetch(`${origin}/unsubscribe`, {
@@ -73,29 +82,36 @@ function App() {
 
   useEffect(() => {
     const url = apiOrigin() || undefined;
-    const socket = io(url, { transports: ['websocket', 'polling'] });
+    const isDev = process.env.NODE_ENV === 'development';
+    const socket = io(url, isDev
+      ? { transports: ['polling'], upgrade: false }
+      : { transports: ['websocket', 'polling'] });
     socketRef.current = socket;
 
     socket.on('taskAdded', (task) => {
       const text = task && task.text ? String(task.text) : '';
-      const ts = task && task.timestamp;
+      const noteId = Number(task && task.id);
+      const reminder =
+        typeof (task && task.reminder) === 'number' && Number.isFinite(task.reminder)
+          ? task.reminder
+          : null;
       const toast = document.createElement('div');
       toast.textContent = text ? `Новая задача: ${text}` : 'Новая задача';
       toast.className = 'toast';
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
 
-      if (ts != null && ts === lastLocalTaskTs.current) {
+      if (Number.isFinite(noteId) && noteId === lastLocalNoteId.current) {
         window.__notesShellRefresh?.();
         return;
       }
       if (text) {
         const notes = readNotes();
-        if (ts != null && notes.some((n) => n.id === ts)) {
+        if (Number.isFinite(noteId) && notes.some((n) => n.id === noteId)) {
           window.__notesShellRefresh?.();
           return;
         }
-        notes.push({ id: ts ?? Date.now(), text });
+        notes.push({ id: noteId || Date.now(), text, reminder });
         writeNotes(notes);
       }
       window.__notesShellRefresh?.();
@@ -113,7 +129,7 @@ function App() {
 
     (async () => {
       try {
-        const reg = await navigator.serviceWorker.ready;
+        const reg = await getServiceWorkerRegistration();
         if (cancelled) return;
         const sub = await reg.pushManager.getSubscription();
         setPushEnabledVisible(!sub);
@@ -141,9 +157,20 @@ function App() {
         contentRef.current.innerHTML = html;
         if (shellPage === 'home') {
           detachHome = attachNotesHome(contentRef.current, {
-            onNewNote: (text, timestamp) => {
-              lastLocalTaskTs.current = timestamp;
-              socketRef.current?.emit('newTask', { text, timestamp });
+            onNewNote: (note) => {
+              lastLocalNoteId.current = note.id;
+              if (typeof note.reminder === 'number') {
+                socketRef.current?.emit('newReminder', {
+                  id: note.id,
+                  text: note.text,
+                  reminderTime: note.reminder,
+                });
+              } else {
+                socketRef.current?.emit('newTask', {
+                  id: note.id,
+                  text: note.text,
+                });
+              }
             },
           });
         }
