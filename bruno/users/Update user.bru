@@ -1,0 +1,17 @@
+meta {
+  name: Update user
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/users/{{userId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "age": 23
+  }
+}
