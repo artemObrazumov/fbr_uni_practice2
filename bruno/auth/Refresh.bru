@@ -1,0 +1,27 @@
+meta {
+  name: Refresh token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/auth/refresh
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refreshToken": "{{refreshToken}}"
+  }
+}
+
+script:post-response {
+  const b = res.body;
+  if (b && b.accessToken) {
+    bru.setEnvVar("accessToken", b.accessToken, { persist: true });
+  }
+  if (b && b.refreshToken) {
+    bru.setEnvVar("refreshToken", b.refreshToken, { persist: true });
+  }
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Update product
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{baseUrl}}/api/products/{{productId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Sample updated",
+    "price": 100
+  }
+}

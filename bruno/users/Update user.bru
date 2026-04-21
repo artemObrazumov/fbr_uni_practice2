@@ -1,0 +1,22 @@
+meta {
+  name: Update user
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/api/users/{{userId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "username": "admin",
+    "role": "admin"
+  }
+}
