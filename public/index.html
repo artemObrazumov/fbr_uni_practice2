@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Практика 27</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Очередь задач</h1>
+        <p>RabbitMQ · Producer · Workers</p>
+      </header>
+
+      <form id="form" class="card">
+        <label>
+          Тип задачи
+          <select name="type" required>
+            <option value="email">email</option>
+            <option value="report">report</option>
+            <option value="export">export</option>
+          </select>
+        </label>
+        <label>
+          Email (payload)
+          <input type="email" name="email" placeholder="user@example.com" />
+        </label>
+        <label class="check">
+          <input type="checkbox" name="fail" />
+          Симулировать ошибку (для DLQ)
+        </label>
+        <button type="submit">Отправить в очередь</button>
+      </form>
+
+      <div id="result" class="card result hidden"></div>
+
+      <section class="card info">
+        <h2>Воркеры</h2>
+        <pre>WORKER_ID=1 npm run worker
+WORKER_ID=2 npm run worker</pre>
+        <p>Management UI: <a href="http://localhost:15672" target="_blank">localhost:15672</a> (guest / guest)</p>
+      </section>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

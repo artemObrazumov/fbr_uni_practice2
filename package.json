@@ -1,0 +1,15 @@
+{
+  "name": "practice27",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "setup": "node setup.js",
+    "api": "node api.js",
+    "worker": "node worker.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "express": "^4.21.1"
+  }
+}
