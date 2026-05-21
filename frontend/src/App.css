@@ -1,0 +1,164 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #1e3a5f;
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.35rem;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;
+}
+
+.tab {
+  border: none;
+  background: #e8ecf1;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.tab.active {
+  background: #1e3a5f;
+  color: #fff;
+}
+
+.main {
+  flex: 1;
+  padding: 1rem;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.panel {
+  background: #fff;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.panel h2 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.msg {
+  color: #666;
+}
+
+.list {
+  list-style: none;
+}
+
+.list > li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.list > li:last-child {
+  border-bottom: none;
+}
+
+.meta {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.sublist {
+  list-style: disc;
+  margin: 0.5rem 0 0 1.25rem;
+  color: #444;
+}
+
+.sublist .empty {
+  list-style: none;
+  margin-left: -1.25rem;
+  color: #999;
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form h2 {
+  margin-bottom: 0;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.form input,
+.form select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form button {
+  align-self: flex-start;
+  padding: 0.5rem 1rem;
+  background: #1e3a5f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form button:hover {
+  background: #2a5080;
+}
+
+.footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .main {
+    padding: 0.75rem;
+  }
+
+  .panel {
+    padding: 1rem;
+  }
+}
